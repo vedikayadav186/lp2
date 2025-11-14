@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Participant List | AgroRent</title>
+
+  <style>
+    body {
+      font-family: Poppins, sans-serif;
+      background: #f5fff5;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2e7d32;
+    }
+
+    select {
+      width: 250px;
+      padding: 10px;
+      border-radius: 8px;
+      border: 2px solid #c8e6c9;
+      font-size: 15px;
+      margin: 20px auto;
+      display: block;
+      outline: none;
+    }
+
+    table {
+      width: 90%;
+      margin: 20px auto;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #e0f2e0;
+    }
+
+    th {
+      background: #c8e6c9;
+      color: #1b5e20;
+    }
+
+    tr:hover {
+      background: #f4fff4;
+    }
+
+    .empty-msg {
+      text-align: center;
+      font-size: 18px;
+      color: #888;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Event Participants</h1>
+
+  <!-- DROPDOWN -->
+  <select id="eventDropdown" onchange="loadParticipants()">
+    <option value="">-- Select Event --</option>
+    <option value="harvesting">Harvesting Workshop</option>
+    <option value="irrigation">Smart Irrigation Training</option>
+    <option value="soil">Soil Health & Fertility Seminar</option>
+  </select>
+
+  <!-- TABLE -->
+  <table id="participantTable" style="display:none;">
+    <thead>
+      <tr>
+        <th>Participant Name</th>
+        <th>Email</th>
+        <th>Mobile</th>
+      </tr>
+    </thead>
+
+    <tbody id="tableBody"></tbody>
+  </table>
+
+  <p class="empty-msg" id="emptyMsg" style="display:none;">No participants found.</p>
+
+  <script>
+    // 🔥 STATIC JSON PARTICIPANT DATA
+    const participantsData = {
+      harvesting: [
+        { name: "Ramesh Patil", email: "ramesh@gmail.com", mobile: "9876543210" },
+        { name: "Suresh Shinde", email: "suresh@gmail.com", mobile: "9898989898" }
+      ],
+
+      irrigation: [
+        { name: "Aditya Kale", email: "adi@gmail.com", mobile: "9988776655" }
+      ],
+
+      soil: [
+        { name: "Anita Pawar", email: "anita@gmail.com", mobile: "9123456789" },
+        { name: "Rohit Mane", email: "rohit@gmail.com", mobile: "9090909090" },
+        { name: "Sneha Jadhav", email: "sneha@gmail.com", mobile: "9812345678" }
+      ]
+    };
+
+    // 🔥 Function to load participants based on selected event
+    function loadParticipants() {
+      const eventKey = document.getElementById("eventDropdown").value;
+      const table = document.getElementById("participantTable");
+      const tableBody = document.getElementById("tableBody");
+      const emptyMsg = document.getElementById("emptyMsg");
+
+      tableBody.innerHTML = "";  // Clear table before loading
+
+      if (!eventKey) {
+        table.style.display = "none";
+        emptyMsg.style.display = "none";
+        return;
+      }
+
+      const list = participantsData[eventKey];
+
+      if (!list || list.length === 0) {
+        table.style.display = "none";
+        emptyMsg.style.display = "block";
+        return;
+      }
+
+      // Populate table
+      list.forEach(person => {
+        const row = `
+          <tr>
+            <td>${person.name}</td>
+            <td>${person.email}</td>
+            <td>${person.mobile}</td>
+          </tr>
+        `;
+        tableBody.innerHTML += row;
+      });
+
+      table.style.display = "table";
+      emptyMsg.style.display = "none";
+    }
+  </script>
+
+</body>
+</html>

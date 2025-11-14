@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | AgroRent</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Poppins, sans-serif;
+      background: #f4fff4;
+      display: flex;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 230px;
+      background: #2e7d32;
+      color: white;
+      height: 100vh;
+      padding: 20px;
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .sidebar a {
+      display: block;
+      text-decoration: none;
+      color: white;
+      padding: 12px;
+      margin-bottom: 8px;
+      border-radius: 6px;
+      transition: 0.3s;
+    }
+
+    .sidebar a:hover {
+      background: #1b5e20;
+    }
+
+    /* Main Content */
+    .main {
+      flex: 1;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #2e7d32;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 25px;
+    }
+
+    table th, table td {
+      padding: 12px;
+      border-bottom: 2px solid #c8e6c9;
+      text-align: left;
+    }
+
+    table th {
+      background: #e8ffe8;
+      color: #1b5e20;
+    }
+
+    .btn {
+      padding: 5px 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      color: white;
+      font-size: 14px;
+    }
+
+    .update {
+      background: #007bff;
+    }
+
+    .delete {
+      background: #d32f2f;
+    }
+
+    .btn:hover {
+      opacity: 0.85;
+    }
+
+    /* ===== MODAL STYLING ===== */
+    .modal-bg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4);
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-box {
+      background: white;
+      padding: 20px;
+      width: 350px;
+      border-radius: 10px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-box h3 {
+      margin-top: 0;
+      color: #2e7d32;
+    }
+
+    .modal-box input {
+      width: 90%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 2px solid #c8e6c9;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+
+    .modal-box input:focus {
+      border-color: #2e7d32;
+    }
+
+    .modal-actions {
+      text-align: right;
+    }
+
+    .close-btn {
+      background: gray;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Admin Panel</h2>
+    <a href="#">Dashboard</a>
+    <a href="#">Manage Events</a>
+    <a href="#">User Records</a>
+    <a href="adminlogin.html">Logout</a>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main">
+    <h1>Event Records</h1>
+
+    <!-- TABLE -->
+    <table id="eventTable">
+      <tr>
+        <th>Event Name</th>
+        <th>Date</th>
+        <th>Location</th>
+        <th>Actions</th>
+      </tr>
+
+      <tr>
+        <td>Harvesting Workshop</td>
+        <td>25-Nov-2025</td>
+        <td>Nashik</td>
+        <td>
+          <button class="btn update" onclick="openUpdateModal(this)">Update</button>
+          <button class="btn delete" onclick="deleteRow(this)">Delete</button>
+        </td>
+      </tr>
+
+      <tr>
+        <td>Smart Irrigation Training</td>
+        <td>30-Nov-2025</td>
+        <td>Pune</td>
+        <td>
+          <button class="btn update" onclick="openUpdateModal(this)">Update</button>
+          <button class="btn delete" onclick="deleteRow(this)">Delete</button>
+        </td>
+      </tr>
+
+    </table>
+  </div>
+
+  <!-- ===== UPDATE MODAL ===== -->
+  <div class="modal-bg" id="modalBg">
+    <div class="modal-box">
+      <h3>Update Event</h3>
+
+      <input type="text" id="editName" placeholder="Event Name">
+      <input type="text" id="editDate" placeholder="Event Date">
+      <input type="text" id="editLocation" placeholder="Event Location">
+
+      <div class="modal-actions">
+        <button class="btn update" onclick="saveUpdate()">Save</button>
+        <button class="btn close-btn" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentRow = null;
+
+    // OPEN MODAL with existing row data
+    function openUpdateModal(button) {
+      currentRow = button.parentNode.parentNode;
+
+      document.getElementById("editName").value = currentRow.cells[0].innerText;
+      document.getElementById("editDate").value = currentRow.cells[1].innerText;
+      document.getElementById("editLocation").value = currentRow.cells[2].innerText;
+
+      document.getElementById("modalBg").style.display = "flex";
+    }
+
+    // CLOSE MODAL
+    function closeModal() {
+      document.getElementById("modalBg").style.display = "none";
+    }
+
+    // SAVE UPDATE
+    function saveUpdate() {
+      currentRow.cells[0].innerText = document.getElementById("editName").value;
+      currentRow.cells[1].innerText = document.getElementById("editDate").value;
+      currentRow.cells[2].innerText = document.getElementById("editLocation").value;
+
+      closeModal(); // close modal after saving
+    }
+
+    // DELETE ROW
+    function deleteRow(button) {
+      const row = button.parentNode.parentNode;
+      row.remove();
+    }
+  </script>
+
+</body>
+</html>

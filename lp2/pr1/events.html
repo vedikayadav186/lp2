@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AgroRent | Events</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background-color: #f4f7f6;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #2e7d32;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    nav {
+      background-color: #4caf50;
+      text-align: center;
+      padding: 10px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 15px;
+      font-weight: bold;
+    }
+
+    .event-container {
+      max-width: 1000px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #2e7d32;
+      margin-bottom: 20px;
+    }
+
+    #searchBox {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin-bottom: 30px;
+    }
+
+    .event-card {
+      background-color: #e8f5e9;
+      border-left: 6px solid #4caf50;
+      margin: 15px 0;
+      padding: 20px;
+      border-radius: 8px;
+      transition: transform 0.2s;
+    }
+
+    .event-card:hover {
+      transform: scale(1.02);
+      background-color: #c8e6c9;
+    }
+
+    .event-title {
+      font-size: 20px;
+      color: #2e7d32;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    .event-details {
+      color: #333;
+      font-size: 15px;
+      margin-bottom: 8px;
+    }
+
+    .event-description {
+      color: #555;
+      line-height: 1.6;
+    }
+
+    .no-results {
+      text-align: center;
+      color: #777;
+      font-style: italic;
+      margin-top: 15px;
+    }
+
+    footer {
+      text-align: center;
+      background: #2e7d32;
+      color: white;
+      padding: 10px;
+      margin-top: 40px;
+    }
+
+    @media (max-width: 600px) {
+      .event-container {
+        margin: 20px;
+        padding: 20px;
+      }
+      .event-title {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AgroRent - Upcoming Events</h1>
+  </header>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="events.html">Events</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <div class="event-container">
+    <h2>🌾 Explore Our Agricultural Events</h2>
+    <input type="text" id="searchBox" placeholder="Search events (e.g. Tractor, Organic, Farming...)" onkeyup="filterEvents()">
+
+    <div id="eventList"></div>
+    <p id="noResults" class="no-results" style="display:none;">No matching events found.</p>
+  </div>
+
+  <footer>
+    <p>© 2025 AgroRent | Empowering Farmers with Knowledge 🌱</p>
+  </footer>
+
+  <script>
+    // 🌱 Step 1: Define event objects with details
+    const events = [
+      {
+        name: "Tractor Maintenance Workshop",
+        date: "November 20, 2025",
+        location: "Nashik Agriculture Center",
+        description: "Hands-on session for farmers to learn basic and advanced tractor maintenance, oil checks, and troubleshooting tips."
+      },
+      {
+        name: "Smart Irrigation Techniques",
+        date: "December 5, 2025",
+        location: "Pune Agri Expo Ground",
+        description: "Explore modern irrigation systems, sensor-based watering, and sustainable water management practices."
+      },
+      {
+        name: "Organic Farming Seminar",
+        date: "December 15, 2025",
+        location: "Ahmednagar Green Park Hall",
+        description: "Learn about organic manure, pesticide-free farming, and government schemes supporting organic agriculture."
+      },
+      {
+        name: "Drone Usage in Modern Farming",
+        date: "January 10, 2026",
+        location: "Mumbai Agrotech Arena",
+        description: "Demonstration of drones for spraying, crop monitoring, and yield analysis in large farmlands."
+      },
+      {
+        name: "Soil Health Improvement Program",
+        date: "January 25, 2026",
+        location: "Aurangabad Soil Lab Center",
+        description: "Experts discuss soil fertility tests, composting methods, and sustainable soil management."
+      },
+      {
+        name: "Hydroponics Basics Webinar",
+        date: "February 5, 2026",
+        location: "Online (Zoom)",
+        description: "Introductory webinar for beginners interested in hydroponic setups for small and large-scale farming."
+      }
+    ];
+
+    // 🌿 Step 2: Display event cards
+    const eventList = document.getElementById("eventList");
+    const noResults = document.getElementById("noResults");
+
+    function displayEvents(list) {
+      eventList.innerHTML = "";
+      if (list.length === 0) {
+        noResults.style.display = "block";
+      } else {
+        noResults.style.display = "none";
+        list.forEach(event => {
+          const card = document.createElement("div");
+          card.className = "event-card";
+          card.innerHTML = `
+            <div class="event-title">${event.name}</div>
+            <div class="event-details"><strong>Date:</strong> ${event.date}</div>
+            <div class="event-details"><strong>Location:</strong> ${event.location}</div>
+            <div class="event-description">${event.description}</div>
+          `;
+          eventList.appendChild(card);
+        });
+      }
+    }
+
+    // 🌾 Step 3: Filter by keyword
+    function filterEvents() {
+      const keyword = document.getElementById("searchBox").value.toLowerCase();
+      const filtered = events.filter(event =>
+        event.name.toLowerCase().includes(keyword) ||
+        event.description.toLowerCase().includes(keyword) ||
+        event.location.toLowerCase().includes(keyword)
+      );
+      displayEvents(filtered);
+    }
+
+    // 🌻 Step 4: Initial load
+    displayEvents(events);
+  </script>
+</body>
+</html>

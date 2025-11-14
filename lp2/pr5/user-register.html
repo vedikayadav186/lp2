@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgroRent | User Registration</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+    body {
+      margin: 0; background: linear-gradient(135deg, #a8e063, #56ab2f);
+      display: flex; justify-content: center; align-items: center; height: 100vh;
+    }
+
+    .container {
+      background: #fff; border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      width: 420px; padding: 35px; animation: slideUp 0.8s ease-out;
+    }
+
+    @keyframes slideUp { from { transform: translateY(50px); opacity: 0; }
+                         to { transform: translateY(0); opacity: 1; } }
+
+    h2 { text-align: center; color: #2e7d32; margin-bottom: 25px; }
+
+    .input-group { position: relative; margin-bottom: 20px; }
+
+    .input-group input, .input-group select {
+      width: 100%; padding: 12px; border: 2px solid #c8e6c9;
+      border-radius: 8px; outline: none; transition: 0.3s; font-size: 15px;
+      background: #f9fff9;
+    }
+
+    .input-group label {
+      position: absolute; top: 12px; left: 15px; color: #777; transition: 0.3s;
+      pointer-events: none; background: white; padding: 0 5px;
+    }
+
+    .input-group input:focus, .input-group select:focus {
+      border-color: #4caf50; box-shadow: 0 0 6px rgba(76,175,80,0.4);
+    }
+
+    .input-group input:focus + label,
+    .input-group input:not(:placeholder-shown) + label {
+      top: -8px; left: 10px; font-size: 13px; color: #2e7d32;
+    }
+
+    button {
+      width: 100%; padding: 12px; border: none; border-radius: 8px;
+      background: #2e7d32; color: white; font-size: 16px;
+      font-weight: bold; cursor: pointer; transition: 0.3s;
+    }
+
+    button:hover { background: #1b5e20; transform: scale(1.02); }
+
+    .message { text-align: center; margin-top: 15px; font-weight: 600; }
+
+    #extraFields { margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>👩‍🌾 User Registration</h2>
+
+    <form id="registerForm">
+
+      <!-- Name -->
+      <div class="input-group">
+        <input type="text" id="name" placeholder=" " required>
+        <label>Full Name</label>
+      </div>
+
+      <!-- Email -->
+      <div class="input-group">
+        <input type="email" id="email" placeholder=" " required>
+        <label>Email Address</label>
+      </div>
+
+      <!-- Password -->
+      <div class="input-group">
+        <input type="password" id="password" placeholder=" " required>
+        <label>Password</label>
+      </div>
+
+      <!-- User Type -->
+      <div class="input-group">
+        <select id="userType" required>
+          <option value="">-- Select Role --</option>
+          <option value="owner">Equipment Owner</option>
+          <option value="seeker">Looking for Equipment</option>
+        </select>
+      </div>
+
+      <!-- Dynamic fields shown here -->
+      <div id="extraFields"></div>
+
+      <button type="submit">Register Now</button>
+      <p class="message" id="statusMsg"></p>
+
+    </form>
+  </div>
+
+  <script>
+    const userTypeSelect = document.getElementById("userType");
+    const extraFields = document.getElementById("extraFields");
+
+    userTypeSelect.addEventListener("change", () => {
+      const type = userTypeSelect.value;
+      extraFields.innerHTML = ""; // clear previous
+
+      if (type === "owner") {
+        extraFields.innerHTML = `
+          <div class="input-group">
+            <input type="text" id="equipName" placeholder=" " required>
+            <label>Equipment Name</label>
+          </div>
+
+          <div class="input-group">
+            <input type="text" id="equipCondition" placeholder=" " required>
+            <label>Condition (Good / Fair / Excellent)</label>
+          </div>
+
+          <div class="input-group">
+            <input type="number" id="price" placeholder=" " required>
+            <label>Rental Price Per Day (₹)</label>
+          </div>
+        `;
+      }
+
+      if (type === "seeker") {
+        extraFields.innerHTML = `
+          <div class="input-group">
+            <input type="text" id="neededEquip" placeholder=" " required>
+            <label>Equipment Needed</label>
+          </div>
+
+          <div class="input-group">
+            <input type="text" id="duration" placeholder=" " required>
+            <label>Preferred Rental Duration</label>
+          </div>
+
+          <div class="input-group">
+            <input type="text" id="location" placeholder=" " required>
+            <label>Your Location</label>
+          </div>
+        `;
+      }
+    });
+
+    // Submit logic
+    const form = document.getElementById("registerForm");
+    const msg = document.getElementById("statusMsg");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      // Common fields
+      const userData = {
+        name: document.getElementById("name").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        password: document.getElementById("password").value.trim(),
+        userType: document.getElementById("userType").value
+      };
+
+      // Add extra depending on userType
+      if (userData.userType === "owner") {
+        userData.equipment = {
+          name: document.getElementById("equipName").value.trim(),
+          condition: document.getElementById("equipCondition").value.trim(),
+          price: document.getElementById("price").value.trim()
+        };
+      }
+
+      if (userData.userType === "seeker") {
+        userData.seekerInfo = {
+          needed: document.getElementById("neededEquip").value.trim(),
+          duration: document.getElementById("duration").value.trim(),
+          location: document.getElementById("location").value.trim()
+        };
+      }
+
+      try {
+        const response = await fetch("http://localhost:5000/registerUser", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(userData)
+        });
+
+        const result = await response.json();
+        msg.style.color = response.ok ? "green" : "red";
+        msg.textContent = result.message;
+
+        if (response.ok) form.reset();
+      } catch (error) {
+        msg.style.color = "red";
+        msg.textContent = "❌ Server not reachable.";
+      }
+    });
+  </script>
+
+</body>
+</html>
