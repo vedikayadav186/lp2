@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 
 // ✅ Replace this with your MongoDB Atlas connection string
 mongoose.connect(
-  "",
+  "mongodb+srv://vdyadav370822_db_user:RVda2RVJVXyBAXpV@cluster0.kfkzz9w.mongodb.net/agrorentDB",
   { useNewUrlParser: true, useUnifiedTopology: true }
 )
 .then(() => console.log("✅ Connected to MongoDB Atlas"))
@@ -95,10 +95,12 @@ app.post("/loginUser", async (req, res) => {
 const PORT = 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
 
-
+
+
 // mkdir agrorent-server
 // cd agrorent-server
 // npm init -y
 // npm install express mongoose cors body-parser
 // npm install express mongoose cors body-parser bcryptjs
 // node server.js
+
