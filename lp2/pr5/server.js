@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 
 // ✅ Replace this with your MongoDB Atlas connection string
 mongoose.connect(
-  "mongodb+srv://vdyadav370822_db_user:RVda2RVJVXyBAXpV@cluster0.kfkzz9w.mongodb.net/agrorentDB",
+  "",
   { useNewUrlParser: true, useUnifiedTopology: true }
 )
 .then(() => console.log("✅ Connected to MongoDB Atlas"))
